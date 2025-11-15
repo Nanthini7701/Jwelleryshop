@@ -1,0 +1,4 @@
+Django>=4.2
+razorpay>=1.2.0
+pillow
+python-dotenv

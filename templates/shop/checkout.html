@@ -1,0 +1,63 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+{% load static %}
+<h3>Checkout</h3>
+{% if order and razorpay_order %}
+  <p>Total: ₹{{ total }}</p>
+  <button id="rzp-button" class="btn btn-primary">Pay with Razorpay</button>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    (function(){
+      const options = {
+        key: "{{ razorpay_key_id }}",
+        amount: "{{ razorpay_order.amount }}",
+        currency: "INR",
+        name: "Jwellery Shop",
+        description: "Order #{{ order.pk }}",
+        order_id: "{{ razorpay_order.id }}",
+        handler: function (response){
+          fetch("{% url 'shop:payment_success' %}", {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(response)
+          })
+          .then(r => r.json())
+          .then(data => {
+            if (data && data.status === 'ok') {
+              window.location.href = "{% url 'shop:product_list' %}" + '?order_success=' + data.order_id;
+            } else {
+              alert('Payment verification failed. Please contact support.');
+            }
+          })
+          .catch(err => {
+            console.error(err);
+            alert('Payment verification failed. Please contact support.');
+          });
+        },
+        prefill: {
+          name: "{{ user.get_full_name }}",
+          email: "{{ user.email }}"
+        },
+        theme: { color: "#F37254" }
+      };
+
+      const rzp = new Razorpay(options);
+      document.getElementById('rzp-button').onclick = function(e){
+        rzp.open();
+        e.preventDefault();
+      }
+    })();
+  </script>
+
+  <p>After successful payment you'll be redirected after verification.</p>
+{% else %}
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-primary">Start Payment</button>
+  </form>
+{% endif %}
+{% endblock %}

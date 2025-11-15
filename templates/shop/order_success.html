@@ -1,0 +1,6 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+{% load static %}
+<h3>Order Successful</h3>
+<p>Order {{ order.pk }} paid successfully. Payment ID: {{ order.razorpay_payment_id }}</p>
+{% endblock %}

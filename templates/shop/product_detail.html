@@ -1,0 +1,22 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+{% load static %}
+<div class="row">
+  <div class="col-md-6">
+    {% if product.image %}
+      <img src="{{ product.image.url }}" class="img-fluid">
+    {% endif %}
+  </div>
+  <div class="col-md-6">
+    <h3>{{ product.name }}</h3>
+    <p>{{ product.description }}</p>
+    <p>Price: ₹{{ product.price }}</p>
+    <form method="post" action="{% url 'shop:add_to_cart' product.pk %}">
+      {% csrf_token %}
+      {{ form.quantity }}
+      <button class="btn btn-success">Add to cart</button>
+    </form>
+    <a href="{% url 'shop:toggle_wishlist' product.pk %}" class="btn btn-outline-secondary mt-2">Toggle Wishlist</a>
+  </div>
+</div>
+{% endblock %}
