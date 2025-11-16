@@ -8,7 +8,7 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJW_SECRET', 'change-me-for-production')
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['https://jwelleryshop-1.onrender.com/','*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
